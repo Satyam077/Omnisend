@@ -1,32 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+# Stage 1: Runtime base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+# Render uses $PORT
+ENV ASPNETCORE_URLS=http://+:$PORT
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <SpaRoot>..\omnisend.client</SpaRoot>
-    <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
-    <SpaProxyServerUrl>https://localhost:64421</SpaProxyServerUrl>
-    <UserSecretsId>9636cd5c-4a2b-476e-b3f6-967440018cda</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  </PropertyGroup>
+# Stage 2: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
-      <Version>8</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
+# Copy server project and restore dependencies
+COPY ["Omnisend.Server/Omnisend.Server.csproj", "./"]
+RUN dotnet restore "./Omnisend.Server.csproj"
 
-  <ItemGroup>
-    <ProjectReference Include="..\omnisend.client\omnisend.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
+# Copy all files and build
+COPY . ./
+RUN dotnet publish "./Omnisend.Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-</Project>
+# Stage 3: Final image
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "Omnisend.Server.dll"]
