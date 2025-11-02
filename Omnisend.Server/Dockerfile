@@ -15,7 +15,7 @@ WORKDIR /src
 
 # Copy only the API project file first and restore dependencies
 COPY ["Omnisend.Server.csproj", "./"]
-RUN dotnet restore "Omnisend.Server/Omnisend.Server.csproj"
+RUN dotnet restore "Omnisend.Server.csproj"
 
 # Copy the rest of the project
 COPY . .
