@@ -14,7 +14,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy only the API project file first and restore dependencies
-COPY ["Omnisend.Server/Omnisend.Server.csproj", "Omnisend.Server/"]
+COPY ["Omnisend.Server.csproj", "./"]
 RUN dotnet restore "Omnisend.Server/Omnisend.Server.csproj"
 
 # Copy the rest of the project
