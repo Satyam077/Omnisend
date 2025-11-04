@@ -4,6 +4,11 @@ using Omnisend.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+builder.Services.AddHealthChecks();
+
 // Add services to the container.
 builder.Services.Configure<OmnisendConfig>(builder.Configuration.GetSection("Omnisend"));
 builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<OmnisendConfig>>().Value);
@@ -29,6 +34,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+app.MapHealthChecks("/health");
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

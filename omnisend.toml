@@ -1,0 +1,8 @@
+[build]
+builder = "docker"
+dockerfilePath = "./Omnisend.Server/Dockerfile"
+
+[deploy]
+startCommand = "./Omnisend.Server"
+restartPolicyType = "always"
+healthCheckPath = "/health"
