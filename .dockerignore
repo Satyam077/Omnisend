@@ -1,7 +1,14 @@
 **/.classpath
 **/.dockerignore
 **/.env
-**/.git
+# Un-comment this line ↓
+#!**/.git
+!.git/
+!.git/HEAD
+!.git/config
+!.git/packed-refs
+!.git/refs/heads/**
+
 **/.gitignore
 **/.project
 **/.settings
@@ -24,7 +31,3 @@
 LICENSE
 README.md
 !**/.gitignore
-!.git/HEAD
-!.git/config
-!.git/packed-refs
-!.git/refs/heads/**
