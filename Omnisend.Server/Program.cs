@@ -37,7 +37,7 @@ var app = builder.Build();
 app.MapHealthChecks("/health");
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
