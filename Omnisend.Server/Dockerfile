@@ -2,8 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Omnisend.Server/Omnisend.Server.csproj", "Omnisend.Server/"]
-COPY ["omnisend.client/omnisend.client.esproj", "omnisend.client/"]
+COPY ["Omnisend.Server/Omnisend.Server.csproj", "."]
+COPY ["omnisend.client/omnisend.client.esproj", "."]
 RUN dotnet restore "./Omnisend.Server/Omnisend.Server.csproj"
 COPY . .
 WORKDIR "/src/Omnisend.Server"
