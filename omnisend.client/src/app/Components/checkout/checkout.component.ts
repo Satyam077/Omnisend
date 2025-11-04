@@ -14,6 +14,7 @@ export class CheckoutComponent implements OnInit {
   showPopup = false;
   popupShownOnce = false;
   response: any;
+  customerResponse: any;
   productTitle = 'Stylish Sneakers';
 
   constructor(private omnisend: CheckoutService) {}
@@ -25,19 +26,21 @@ export class CheckoutComponent implements OnInit {
     if (!this.popupShownOnce && event.clientY <= 25) {
       this.showPopup = true;
       this.popupShownOnce = true;
+      this.createContact();
     }
   }
 
   // User clicked "Proceed to Checkout"
   startCheckout() {
+    //this.createCustomer();
     const payload = {
       origin: 'api',
       eventID: crypto.randomUUID(),
-      eventName: 'Started Checkout',
+      eventName: 'started checkout',
       eventVersion: '',
       eventTime: new Date().toISOString(),
       properties: {
-        abandonedCheckoutURL: 'https://example.com/checkout',
+        abandonedCheckoutURL: 'https://fed-filings.argosstaging.com/checkout.aspx?application=llc&recordID=1070&email=wpoll215@yopmail.com',
         cartID: 'cart123',
         currency: 'EUR',
         lineItems: [
@@ -62,11 +65,11 @@ export class CheckoutComponent implements OnInit {
         value: this.discountApplied ? this.discountedPrice : this.price,
       },
       contact: {
-        id: '67447b7d5c1cd54488ec24d9',
+        id: '6908b37a90e3a43d2f736b27',
         email: 'c59933290@gmail.com',
         phone: '+443031237300',
-        firstName: 'Chandan',
-        lastName: 'Chauhan',
+        firstName: 'John',
+        lastName: 'Doe',
         city: 'New York',
         country: 'United States',
         countryCode: 'US',
@@ -74,9 +77,13 @@ export class CheckoutComponent implements OnInit {
     };
 
     this.omnisend.sendStartedCheckout(payload).subscribe({
-      next: (res) => (this.response = res),
+      next: (res) => (this.response = res,
+        console.log('response:', res)
+      ),
       error: (err) => (this.response = err),
     });
+    //this.createContact();
+
   }
 
   // Apply 20% discount
@@ -91,50 +98,114 @@ export class CheckoutComponent implements OnInit {
   closePopup() {
     this.showPopup = false;
   }
+  createContact() {
+    const contact = {
+      email: 'john1@example.com',
+      contactID: '69049659decdae4620112def',
+      createdAt: new Date().toISOString(),
+      firstName: 'Chandan',
+      lastName: 'Chauhan',
+      country: 'United States',
+      countryCode: 'US',
+      state: 'TX',
+      city: 'Austin',
+      postalCode: '73301',
+      address: '123 Main St',
+      gender: 'm',
+      phone: '',
+      birthdate: null,
+      status: 'subscribed',
+      tags: ['form_subscriber', 'welcome_discount', 'source: form'],
+      segments: ['690383e231a0f2765672d87d'],
+      statuses:
+      [
+        {
+          channel: 'email',
+          status: 'subscribed',
+          date: new Date().toISOString(),
+          statusDate: new Date().toISOString(),
+        },
+      ],
+      optIns: [
+        {
+          channel: 'email',
+          date: new Date().toISOString(),
+        },
+      ],
+      consents: [
+        {
+          channel: 'email',
+          source: 'form:69047b9a4b954252bb1f65d4',
+          ip: '122.176.73.115',
+          userAgent:
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0',
+          createdAt: new Date().toISOString(),
+        },
+      ],
+      customProperties: null,
+      identifiers: [
+        {
+          id: 'john1@example.com',
+          type: 'email',
+          source: 'form',
+          channels: {
+            email: {
+              status: 'subscribed',
+              statusDate: new Date().toISOString(),
+            },
+          },
+        },
+      ],
+    };
+    this.omnisend.createContact(contact).subscribe({
+      next: (res) => (this.response = res),
+      error: (err) => (this.response = err),
+    });
+    // console.log(
+    //   'Contact creation initiated with data:',
+    //   contact,
+    //   this.response
+    // );
+  }
 
-  // constructor(private omnisendService: CheckoutService) {}
-  // ngOnInit(): void {
-  //   this.sendCheckoutEvent();
-  // }
+  createCustomer() {
+    const customer = {
+      email: 'c59933290@gmail.com',
+      firstName: 'John',
+      lastName: 'Doe',
+      country: 'United States',
+      countryCode: 'US',
+      city: 'New York',
+      sendWelcomeEmail: false,
+      status: 'subscribed',
+      statusDate: new Date().toISOString(),
+      statuses: [
+        {
+          statusDate: new Date().toISOString(),
+          channel: 'email',
+          status: 'subscribed',
+          date: '2025-10-31T10:58:33.612Z',
+        },
+      ],
+      customProperties: {
+        recordId: 'REC-987654',
+        applicationName: 'FED FILINGS LLC',
+        recordSubmitDate: new Date().toISOString(),
+        applicationUrl:
+          'https://fed-filings.argosstaging.com/checkout.aspx?application=llc&recordID=1070&email=wpoll215@yopmail.com',
+        einNumber: '12-3456789',
+        checkoutStatus: 0, // 0 = pending
+        sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
+      },
+    };
 
-  // sendCheckoutEvent(): void {
-  //   const checkoutData = {
-  //     origin: 'api',
-  //     eventID: 'f3f61bc6-07b8-4645-92d8-189d882dbcb1',
-  //     eventVersion: '',
-  //     eventTime: new Date().toISOString(),
-  //     properties: {
-  //       abandonedCheckoutURL: 'https://example.com/checkout',
-  //       cartID: 'a342-dsfv12',
-  //       currency: 'EUR',
-  //       lineItems: [
-  //         {
-  //           productCategories: [{ id: '123', title: 'Shoes' }],
-  //           productDescription: 'The best product with many various features',
-  //           productDiscount: 10.19,
-  //           productID: '1',
-  //           productImageURL: 'https://example.com/product/232423-image.jpg',
-  //           productPrice: 19.99,
-  //           productQuantity: 2,
-  //           productSKU: 200,
-  //           productStrikeThroughPrice: 29.99,
-  //           productTitle: 'The best product',
-  //           productURL: 'https://example.com/product/232423',
-  //           productVariantID: '123',
-  //           productVariantImageURL:
-  //             'https://example.com/product/232423-variant-image.jpg',
-  //         },
-  //       ],
-  //       value: 19.99,
-  //     },
-  //     contact: {
-  //       id: '67447b7d5c1cd54488ec24d8',
-  //       email: 'chandan@inestweb.com',
-  //       firstName: 'Chandan',
-  //       lastName: 'Chauhan',
-  //       country: 'United States',
-  //     },
-  //   };
-  //   this.omnisendService.trackStartedCheckout(checkoutData);
-  // }
+    this.omnisend.createCustomer(customer).subscribe({
+      next: (res) => (this.customerResponse = res,
+        console.log('Response from server:', res)
+      ),
+      error: (err) => (this.customerResponse = err,
+        console.error('Error from server:', err)
+      ),
+    });
+  }
 }

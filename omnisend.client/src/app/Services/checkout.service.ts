@@ -9,10 +9,9 @@ declare global {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CheckoutService {
-
   private baseUrl = 'https://localhost:7179/api/Checkout';
   //environment.apiBaseUrl + '/checkout';
 
@@ -52,10 +51,18 @@ export class CheckoutService {
           ...data,
           callbacks: {
             onSuccess: () => console.log('Omnisend event success'),
-            onError: () => console.error('Omnisend event failed')
-          }
-        }
+            onError: () => console.error('Omnisend event failed'),
+          },
+        },
       ]);
     }
+  }
+
+  createContact(contact: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/create`, contact);
+  }
+
+  createCustomer(contact: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/customers`, contact);
   }
 }

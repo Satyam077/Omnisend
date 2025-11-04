@@ -28,5 +28,32 @@ namespace Omnisend.Server.Services
                 return (false, ex.Message);
             }
         }
+        public async Task<(bool ok, string message)> CreateContactAsync(OmnisendContactModel model)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("contacts", model);
+                var body = await response.Content.ReadAsStringAsync();
+                return (response.IsSuccessStatusCode, body);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
+
+        public async Task<(bool ok, string message)> CreateCustomerContactAsync(CustomerModel model)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("contacts", model);
+                var body = await response.Content.ReadAsStringAsync();
+                return (response.IsSuccessStatusCode, body);
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+        }
     }
 }
